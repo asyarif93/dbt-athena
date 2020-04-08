@@ -73,6 +73,18 @@
 {% endmacro %}
 
 
+{% macro athena__create_view_as(relation, sql) -%}
+  create view
+    {{ relation }}
+  as (
+    -- wrapping to select allows to use "with" statements inside "create view"
+    select * from (
+        {{ sql }}
+    )
+  );
+{% endmacro %}
+
+
 {% macro athena__drop_relation(relation) -%}
   {% call statement('drop_relation', auto_begin=False) -%}
     drop {{ relation.type }} if exists {{ relation }}
